@@ -22,12 +22,11 @@ float Loss(double X,double tao, double x[100][2],double* y ,double* ret)
 	double l= 0.0;
 	for(int i=0;i<99;++i)
 	{
-		double temp = x_times_theta(theta,x[i])-y[i] ;
-		double r = (weight(X,x[i][1],tao)* pow(temp,2.0));
-		if(r<0.0) printf("error\n");
+		double temp = y[i] - x_times_theta(theta,x[i]) ;
+		double r = (weight(X,x[i][1],tao)* temp);
 		r_t[0] += r*x[i][0];
 		r_t[1] += r*x[i][1];
-		l += r;
+		l += r*temp;
 	}
 	ret[0] += r_t[0];
 	ret[1] += r_t[1];
@@ -71,15 +70,15 @@ int progress(const char* x_dat,const char* y_dat)
 		if (line)
 			free(line);
 	}
-	double predict_x = 4.0;
+	double predict_x = 10;
 	double last_l = 10000000.0; //make a max loss
-	for(int i=0;i<100;++i)
+	for(int i=0;i<400;++i)
 	{
 		double loss[2]={0.01,0.01};
 		double tao = 0.8;   //use 0.1  0.3  0.8 2 and 10 try in this homework
 		double l = Loss(predict_x,tao,x,y,&loss[0]);
-		theta[0] = theta[0] + 0.0001*loss[0];
-		theta[1] = theta[1] + 0.0001*loss[1];
+		theta[0] = theta[0] + 0.0005*loss[0];
+		theta[1] = theta[1] + 0.0005*loss[1];
 		if( l >= last_l) break;  //no loss decline at all , just quit
 		double predict_y = theta[0]+predict_x*theta[1];
 		printf("loss:%f,predict_x:%f,tao:%f,after %dth iterate %f\n",l,predict_x,tao,i,theta[0]+predict_x*theta[1]);
