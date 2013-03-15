@@ -32,7 +32,7 @@ float Loss(double X,double tao, double x[100][2],double* y ,double* ret)
 	ret[1] += r_t[1];
 	return l;
 }
-int progress(const char* x_dat,const char* y_dat)
+int lwlr(const char* x_dat,const char* y_dat)
 {
 	//	read x_dat into x[100][2] 0->x0 1->x1
 	double x[100][2];

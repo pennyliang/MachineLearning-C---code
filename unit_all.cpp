@@ -1,6 +1,14 @@
 #include <stdio.h>
-#include <gtest/gtest.h>
+#include "gtest/gtest.h"
 #include "andrewng-problem-set3/regulation.h"
+#include "andrewng-problem-set1/lwlr.h"
+
+TEST( HW,andrewng_problem_set1 )
+{
+        lwlr("./andrewng-problem-set1/q2x.dat","andrewng-problem-set1/q2y.dat");
+        EXPECT_TRUE( true );
+}
+
 
 TEST( HW,andrewng_problem_set3 )
 {
