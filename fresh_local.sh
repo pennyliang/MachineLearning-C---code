@@ -1,0 +1,3 @@
+git stash
+git pull
+
