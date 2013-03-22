@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
+#include <time.h>
+
 const int doc_cnt = 16;
 const int term_per_doc = 16;
 const int term_cnt = 5;
@@ -47,14 +49,14 @@ void update_C_F()
         }
 	for(int i=0;i<doc_cnt;++i)
         {
-                for(int j=0;j<term_cnt;++j)
+                for(int j=0;j<term_per_doc;++j)
                 {
                         C[doc[i][j][0] ][doc[i][j][1]]++;
                 }
         }
         for(int i=0;i<doc_cnt;++i)
         {
-                for(int j=0;j<term_cnt;++j)
+                for(int j=0;j<term_per_doc;++j)
                 {
                         F[i][doc[i][j][1]]++;
                 }
@@ -62,6 +64,7 @@ void update_C_F()
 }
 void show_C()
 {
+	printf("\n");
 	for( int i =0 ;i<term_cnt;++i)
 	{
 		for(int j=0;j<topic_cnt;++j)
@@ -73,9 +76,10 @@ void show_C()
 }
 void show_doc()
 {
+	printf("\n");
 	for(int i=0;i<doc_cnt;i++)
 	{
-		for(int j=0;j<term_cnt;++j)
+		for(int j=0;j<term_per_doc;++j)
 		{
 			printf("{%d,%d}\t",doc[i][j][0],doc[i][j][1]);
 		}
@@ -84,6 +88,7 @@ void show_doc()
 }
 void show_F()
 {
+	printf("\n");
 	for( int i =0 ;i<doc_cnt;++i)
 	{
 		for(int j=0;j<topic_cnt;++j)
@@ -93,7 +98,6 @@ void show_F()
 
 	}
 }
-
 double beta = 0.01;
 double alpha = 15;
 int max_iter = 64;
@@ -102,12 +106,12 @@ int main(void)
 {
 	update_C_F();
 	show_C();
-
+	srand(time(NULL));
 	for(int iter = 0; iter<max_iter;++iter)
 	{
 		for(int d=0;d<doc_cnt;++d) //doc by doc
 		{
-			for(int i=0;i<term_cnt;++i) // term by term
+			for(int i=0;i<term_per_doc;++i) // term by term
 			{
 				double sum_c1[topic_cnt]={0,0};
 				double sum_c2[topic_cnt]={0,0};
@@ -123,18 +127,19 @@ int main(void)
 					{
 						sum_c2[t] += F[d][tt];
 					}
-					result_c[t] += log( (C[doc[d][i][0]][t]+beta) /(sum_c1[t]+term_cnt*beta) ) * (-1) + (-1) * log( (F[d][t]+alpha)/(sum_c2[t]+topic_cnt*alpha)) ;
+					result_c[t] += (C[doc[d][i][0]][t]+beta) /(sum_c1[t]+term_cnt*beta) *  (F[d][t]+alpha)/(sum_c2[t]+topic_cnt*alpha)  ;
 				}
-
-				if(result_c[0] > result_c[1]) // to label <doc d,word i> with 1 ,we know ther are only two topics show write this code for the reason of simple. 
+				//randome get
+				double topic0 = result_c[0] / (result_c[0] + result_c[1]);
+				double topic1 = result_c[1] / (result_c[0] + result_c[1]);
+				int l = 99* topic0;				
+				if(random()%100 < l )
 				{
-					//printf("{class,0}:{word:%d},{doc:%d},%f,%f\n",doc[d][i][0],d,result_c[0],result_c[1]);
-					doc[d][i][1] = 1;
+					doc[d][i][1] = 0;
 				}
 				else
 				{
-					//printf("{class,1}:{word:%d},{doc:%d},%f,%f\n",doc[d][i][0],d,result_c[0],result_c[1]);
-					doc[d][i][1] = 0;
+					doc[d][i][1] = 1;
 				}
 			}
 			//update_C_F(); here to make every change to make effect to next training.
