@@ -6,7 +6,7 @@ const int term_per_doc = 16;
 const int term_cnt = 5;
 const int topic_cnt = 2;
 
-int doc[doc_cnt][term_per_doc][topic_cn]={
+int doc[doc_cnt][term_per_doc][topic_cnt]={
 	{{2,0},{2,0},{2,0},{2,0},{3,1},{3,0},{3,0},{3,0},{3,1},{3,0},{4,1},{4,1},{4,0},{4,1},{4,0},{4,0}},
 	{{2,0},{2,0},{2,1},{2,0},{2,0},{3,1},{3,1},{3,1},{3,1},{3,1},{3,1},{3,0},{4,1},{4,0},{4,0},{4,1}},
 	{{2,0},{2,0},{2,0},{2,1},{2,0},{2,0},{2,0},{3,0},{3,1},{3,0},{3,1},{3,0},{4,1},{4,0},{4,0},{4,0}},
@@ -25,6 +25,10 @@ int doc[doc_cnt][term_per_doc][topic_cn]={
 	{{0,1},{0,0},{0,1},{0,1},{0,0},{1,1},{1,1},{1,0},{1,0},{1,0},{1,0},{1,1},{2,1},{2,1},{2,1},{2,0}},
 
 };
+
+double C[term_cnt][topic_cnt];
+double F[doc_cnt][topic_cnt];
+
 void update_C_F()
 {
 	for(int i=0;i<term_cnt;++i)
@@ -90,8 +94,6 @@ void show_F()
 	}
 }
 
-double C[term_cnt][topic_cnt];
-double F[doc_cnt][topic_cnt];
 double beta = 0.01;
 double alpha = 15;
 int max_iter = 64;
