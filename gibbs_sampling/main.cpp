@@ -99,7 +99,7 @@ void show_F()
 	}
 }
 double beta = 0.01;
-double alpha = 15;
+double alpha = 25;
 int max_iter = 64;
 
 int main(void)
