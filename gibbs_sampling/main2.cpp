@@ -99,57 +99,84 @@ void show_F()
 	}
 }
 double beta = 0.01;
-double alpha = 25;
-int max_iter = 640;
+double alpha = 1;
+int max_iter = 64;
+
+int counter_dt_n[doc_cnt][2];
+int counter_dt_sum_n[doc_cnt];
+int counter_tt_n[2][5];
+int counter_tt_sum_n[2];
 
 int main(void)
 {
-	update_C_F();
-	show_C();
+	//update_C_F();
+	//show_C();
+	for(int m = 0;m<doc_cnt;++m)
+	{
+		for(int k=0;k<term_per_doc;++k)
+		{
+			int topic_idx = doc[m][k][1];
+			int term_idx = doc[m][k][0];
+
+			counter_dt_n[m][topic_idx]++;
+			counter_dt_sum_n[m]++;
+			counter_tt_n[topic_idx][term_idx]++;
+			counter_tt_sum_n[topic_idx]++;
+		}
+		srand(time(NULL));
+	}
 	srand(time(NULL));
 	for(int iter = 0; iter<max_iter;++iter)
 	{
-		for(int d=0;d<doc_cnt;++d) //doc by doc
+		for(int m=0;m<doc_cnt;++m) //doc by doc
 		{
-			for(int i=0;i<term_per_doc;++i) // term by term
+			for(int k=0;k<term_per_doc;++k) // term by term
 			{
-				double sum_c1[topic_cnt]={0,0};
-				double sum_c2[topic_cnt]={0,0};
-				double result_c[topic_cnt]={0.0,0.0};		
 
-				for(int t=0;t<topic_cnt;++t)
+				int topic_idx = doc[m][k][1];
+				int term_idx = doc[m][k][0];
+				counter_dt_n[m][topic_idx]--;
+				counter_dt_sum_n[m]--;
+				counter_tt_n[topic_idx][term_idx]--;
+				counter_tt_sum_n[topic_idx]--;
+				
+
+				//sample topic_idx
+				double a = (counter_dt_n[m][0]+beta)/(counter_dt_sum_n[m]+term_cnt*beta);
+
+				a *= (counter_tt_n[0][term_idx]+alpha)/(counter_tt_sum_n[0]+topic_cnt*alpha);
+				
+				double b = (counter_dt_n[m][1]+beta)/(counter_dt_sum_n[m]+term_cnt*beta);
+				b *= (counter_tt_n[1][term_idx]+alpha)/(counter_tt_sum_n[1]+topic_cnt*alpha);
+				
+				double all = a+b;
+				double topic_0_share = a/all;
+				if( random()%100000 < topic_0_share*100000)
 				{
-					for(int k=0;k<term_cnt;++k)
-					{
-						sum_c1[t] += C[k][t] ;
-					}
-					for(int tt=0;tt<topic_cnt;++tt)
-					{
-						sum_c2[t] += F[d][tt];
-					}
-					result_c[t] += (C[doc[d][i][0]][t]+beta) /(sum_c1[t]+term_cnt*beta) *  (F[d][t]+alpha)/(sum_c2[t]+topic_cnt*alpha)  ;
-				}
-				//randome get
-				double topic0 = result_c[0] / (result_c[0] + result_c[1]);
-				double topic1 = result_c[1] / (result_c[0] + result_c[1]);
-				int l = 1000000* topic0;				
-				if(random()%1000000 <= l )
-				{
-					doc[d][i][1] = 0;
-				}
+					topic_idx = 0;
+					doc[m][k][1] = 0;
+				}	
 				else
 				{
-					doc[d][i][1] = 1;
+					topic_idx = 1;
+					doc[m][k][1] = 1;
 				}
-				update_C_F();
+				//end sample topic_idx
+
+				counter_dt_n[m][topic_idx]++;
+				counter_dt_sum_n[m]++;
+				counter_tt_n[topic_idx][term_idx]++;
+				counter_tt_sum_n[topic_idx]++;
 			}
-			//update_C_F(); here to make every change to make effect to next training.
-			show_doc();
-			printf("\n");
-			show_C();
-			show_F();
 		}
-		//update_C_F(); //update_C_F() here to make docs trained indenpend with order of training
+		show_doc();
+		update_C_F();
+		show_C();
+		show_F();
 	}
+	show_doc();
+	update_C_F();
+	show_C();
+	show_F();
 	return 0;
 }
