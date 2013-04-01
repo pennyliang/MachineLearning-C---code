@@ -8,7 +8,7 @@ const int term_per_doc = 16;
 const int term_cnt = 5;
 const int topic_cnt = 2;
 
-int doc[doc_cnt][term_per_doc][topic_cnt]={
+int doc[doc_cnt][term_per_doc][2]={
 	{{2,0},{2,0},{2,0},{2,0},{3,1},{3,0},{3,0},{3,0},{3,1},{3,0},{4,1},{4,1},{4,0},{4,1},{4,0},{4,0}},
 	{{2,0},{2,0},{2,1},{2,0},{2,0},{3,1},{3,1},{3,1},{3,1},{3,1},{3,1},{3,0},{4,1},{4,0},{4,0},{4,1}},
 	{{2,0},{2,0},{2,0},{2,1},{2,0},{2,0},{2,0},{3,0},{3,1},{3,0},{3,1},{3,0},{4,1},{4,0},{4,0},{4,0}},
@@ -99,13 +99,13 @@ void show_F()
 	}
 }
 double beta = 0.01;
-double alpha = 1;
-int max_iter = 64;
+double alpha = 10;
+int max_iter = 640;
 
-int counter_dt_n[doc_cnt][2];
+int counter_dt_n[doc_cnt][topic_cnt];
 int counter_dt_sum_n[doc_cnt];
-int counter_tt_n[2][5];
-int counter_tt_sum_n[2];
+int counter_tt_n[topic_cnt][term_cnt];
+int counter_tt_sum_n[topic_cnt];
 
 int main(void)
 {
