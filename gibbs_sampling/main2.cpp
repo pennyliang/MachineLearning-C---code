@@ -99,8 +99,8 @@ void show_F()
 	}
 }
 double beta = 0.01;
-double alpha = 10;
-int max_iter = 640;
+double alpha = 25;
+int max_iter = 64;
 
 int counter_dt_n[doc_cnt][topic_cnt];
 int counter_dt_sum_n[doc_cnt];
