@@ -134,12 +134,19 @@ int main(void)
 			{
 
 				int topic_idx = doc[m][k][1];
+				int new_topic_idx;
 				int term_idx = doc[m][k][0];
-				counter_dt_n[m][topic_idx]--;
-				counter_dt_sum_n[m]--;
-				counter_tt_n[topic_idx][term_idx]--;
-				counter_tt_sum_n[topic_idx]--;
+					
+
+				if(counter_dt_n[m][topic_idx]>0)          // avoid to -1....
+					counter_dt_n[m][topic_idx]--;
 				
+				counter_dt_sum_n[m]--;
+				
+				if(counter_tt_n[topic_idx][term_idx]>0)    //avoid to -1....
+					counter_tt_n[topic_idx][term_idx]--;
+				
+				counter_tt_sum_n[topic_idx]--;
 
 				//sample topic_idx
 				double a = (counter_dt_n[m][0]+beta)/(counter_dt_sum_n[m]+term_cnt*beta);
@@ -162,10 +169,13 @@ int main(void)
 					doc[m][k][1] = 1;
 				}
 				//end sample topic_idx
-
-				counter_dt_n[m][topic_idx]++;
+				if(counter_dt_n[m][topic_idx]<=counter_dt_sum_n[m])   // here must be <= ,pls use your head to think...
+					counter_dt_n[m][topic_idx]++;
 				counter_dt_sum_n[m]++;
-				counter_tt_n[topic_idx][term_idx]++;
+				
+				if(counter_tt_n[topic_idx][term_idx]<=counter_tt_sum_n[topic_idx])
+					counter_tt_n[topic_idx][term_idx]++;
+				
 				counter_tt_sum_n[topic_idx]++;
 			}
 		}
