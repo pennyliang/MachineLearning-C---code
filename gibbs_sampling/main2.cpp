@@ -142,13 +142,19 @@ int main(void)
 				
 
 				//sample topic_idx
-				double a = (counter_dt_n[m][0]+beta)/(counter_dt_sum_n[m]+term_cnt*beta);
-
+				/*double a = (counter_dt_n[m][0]+beta)/(counter_dt_sum_n[m]+term_cnt*beta);
 				a *= (counter_tt_n[0][term_idx]+alpha)/(counter_tt_sum_n[0]+topic_cnt*alpha);
 				
 				double b = (counter_dt_n[m][1]+beta)/(counter_dt_sum_n[m]+term_cnt*beta);
 				b *= (counter_tt_n[1][term_idx]+alpha)/(counter_tt_sum_n[1]+topic_cnt*alpha);
-				
+				*/
+				double a = (counter_dt_n[m][0]+alpha)/(counter_dt_sum_n[m]+topic_cnt*alpha);
+                                a *= (counter_tt_n[0][term_idx]+beta)/(counter_tt_sum_n[0]+term_cnt*beta);
+                                
+                                double b = (counter_dt_n[m][1]+alpha)/(counter_dt_sum_n[m]+topic_cnt*alpha);
+                                b *= (counter_tt_n[1][term_idx]+beta)/(counter_tt_sum_n[1]+term_cnt*beta);
+                                
+	
 				double all = a+b;
 				double topic_0_share = a/all;
 				if( random()%100000 < topic_0_share*100000)
