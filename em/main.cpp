@@ -19,7 +19,7 @@ void intialize()
 	}
 	for(int i=0;i<sample_count;++i)
         {
-                x[i][P] = count[int(x[i][LABLE])]/sample_count;
+                x[i][P] = (count[int(x[i][LABLE])]*1.0)/sample_count;
         }
 }
 
