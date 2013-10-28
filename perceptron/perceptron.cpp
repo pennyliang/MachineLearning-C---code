@@ -1,9 +1,13 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <math.h>
+#include <float.h>
 
 using namespace std;
+
 typedef pair<double, double> direct_t;
+
 ostream& operator<<(ostream &os , direct_t& p)
 {
 	cout<<p.first<<"\t"<<p.second<<endl;
@@ -19,6 +23,10 @@ direct_t  operator - ( direct_t& left, direct_t& right)
 double  operator * ( direct_t& left, direct_t& right)
 {
         return (left.first * right.first + left.second * right.second);
+}
+double norm(direct_t& vect)
+{
+	return sqrt( vect.first*vect.first + vect.second*vect.second );
 }
 int main(void)
 {
@@ -56,7 +64,22 @@ int main(void)
 		}
 		cout<<"theta now:"<<theta<<endl;
 	}while(correct_number<postive_number+negative_number);
+		
+	double r = DBL_MAX;
+	for(int i=0;i<3;++i)
+	{
+		double t = +1*(positive_samples[i]*theta);
+		if(t<r) r = t;
+		cout<< t << endl;
+	}
+	for(int i=0;i<3;++i)
+        {
+		double t = -1*(negative_samples[i]*theta) ;
+		if(t<r) r = t;
+                cout<<t << endl;
+        }
 
+	cout<<"margin:"<<r/norm(theta)<<endl;
 	cout<<"theta final:"<<theta<<endl;	
 
 }
