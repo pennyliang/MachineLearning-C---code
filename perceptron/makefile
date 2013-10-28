@@ -1,5 +1,5 @@
 
 main:
-	g++ -o perceptron perceptron.cpp -std=gnu++0x
+	g++ -o perceptron perceptron.cpp
 clean:
 	rm -rf perceptron

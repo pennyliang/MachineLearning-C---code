@@ -32,8 +32,8 @@ int main(void)
 {
 	const int postive_number = 3;
 	const int negative_number = 3;
-	direct_t positive_samples[postive_number] = {{1,1+0.5},{2-0.5,2},{3,3+0.8}};	
-	direct_t negative_samples[negative_number] = {{4,4-0.5},{5+0.5,5},{6,6-1}};	
+	direct_t positive_samples[postive_number] = {direct_t(1,1+0.5),direct_t(2-0.5,2),direct_t(3,3+0.8)};	
+	direct_t negative_samples[negative_number] = {direct_t(4,4-0.5),direct_t(5+0.5,5),direct_t(6,6-1)};	
 
 	direct_t theta(0,2); // initialized theta with (1,2)
 	
