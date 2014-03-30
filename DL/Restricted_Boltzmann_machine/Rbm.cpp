@@ -6,7 +6,6 @@
 #include "array.hpp"
 #include <vector>
 #include <string>
-#include "split.hpp"
 using namespace std;
 double corpus[8][9] = {
                        {1,0,0,0,0,0,0,0,1},
