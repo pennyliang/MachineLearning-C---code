@@ -10,11 +10,16 @@ double sigmoid(double x)
         double ex = pow(2.718281828,x);
         return ex/(1+ex);
 }
+double e(double x)
+{
+	return pow(2.718281828,x);
+}
 double* sig_table;
 double function_g(double x)
 {
         x=x>3.99?4.0:x;
         x=x<-3.99?-4.0:x;
+	//return sigmoid(x);
         return sig_table[(uint32_t)((x+4.0)*128*1024)];
 };
 double init_sig_table()
@@ -101,70 +106,77 @@ int main(void)
 			else
 				sign = -1;
 			for(int i=0;i<20;++i)
-                        {
-                                w1_g1[i] =  sign*s*w2[i]*x*((output*(1-output))*h[i]*(1-h[i]));
-                                b_g1[i] =   sign*s*w2[i]*((output*(1-output))*h[i]*(1-h[i]));
-                        }
-			for(int i=0;i<20;++i)
 			{
-				w2_g1[i] =  sign*s*h[i]*(output*(1-output));
+				w2_g1[i] =  sign*h[i]*(output*(1-output));
 			}
-			b2_g1 = sign*s*(output*(1-output));
-			
-			for(int i = 0;i<20;++i)
-			{
-				w1_g2[i] = 0;
-				w2_g2[i] = 0;
-				b_g2[i] = 0;
-				b2_g2 = 0;
-			}
-			for(int idx=0;idx<20;++idx)	// Monte-Carlo Sampling
-			{
-				double y = idx*1.0/20;
-				x = corpus[index].first;
-
-				for(int i=0;i<20;++i)
-				{
-					h[i] = function_g(w1[i]*x+b[i]);
-				}
-				double sum_tmp = 0.0;
-				for(int i=0;i<20;++i)
-				{
-					sum_tmp += w2[i]*h[i];
-				}
-				sum_tmp += b2;
-				output = function_g(sum_tmp);
-				double errorx = output - y;
-				double sign;
-				if(errorx>0)
-					sign = +1*errorx;
-				else
-					sign = -1*errorx;
-				for(int i=0;i<20;++i)
-				{
-					w2_g2[i] +=  (0.05)*sign*s*h[i]*(output*(1-output));
-				}
-				b2_g2 += (0.05)*sign*s*(output*(1-output));
-				for(int i=0;i<20;++i)
-				{
-					w1_g2[i] +=  (0.05)*sign*s*w2[i]*x*((output*(1-output))*h[i]*(1-h[i]));
-					b_g2[i] +=   (0.05)*sign*s*w2[i]*((output*(1-output))*h[i]*(1-h[i]));;
-				}
-			}
+			b2_g1 = sign*(output*(1-output));
 
 			for(int i=0;i<20;++i)
 			{
-				w1[i] -=  (w1_g1[i] - w1_g2[i]);
-				w2[i] -=  (w2_g1[i] - w2_g2[i]);
-				b[i]  -=  (b_g1[i]  - b_g2[i]);
+				w1_g1[i] =  sign*w2[i]*x*((output*(1-output))*h[i]*(1-h[i]));
+				b_g1[i] =   sign*w2[i]*((output*(1-output))*h[i]*(1-h[i]));
 			}
-			b2 -= (b2_g1 - b2_g2);
+			//sample_20_y
+			double sum_p = 0.0;
+			{	
+				for(int i = 0;i<20;++i)
+				{
+					w1_g2[i] = 0;
+					w2_g2[i] = 0;
+					b_g2[i] = 0;
+					b2_g2 = 0;
+				}
+				for(int idx=0;idx<20;++idx)
+				{
+					double tmp = ((rand()%4096)/4095.0*2) - 1;
+                			double y = tmp*tmp;
+
+					for(int i=0;i<20;++i)
+					{
+						h[i] = function_g(w1[i]*x+b[i]);
+					}
+					double sum_tmp = 0.0;
+					for(int i=0;i<20;++i)
+					{
+						sum_tmp += w2[i]*h[i];
+					}
+					sum_tmp += b2;
+					output = function_g(sum_tmp);
+					double errorx = output - y;
+					double sign;
+					if(errorx>0)
+						sign = +1;
+					else
+						sign = -1;
+
+					errorx = errorx>0?errorx:-1*errorx;	
+					double t = e(errorx);
+					sum_p += t;
+					for(int i=0;i<20;++i)
+					{
+						w2_g2[i] +=  (t)*sign*h[i]*(output*(1-output));
+					}
+					b2_g2 += (t)*sign*(output*(1-output));
+					for(int i=0;i<20;++i)
+					{
+						w1_g2[i] +=  (t)*sign*w2[i]*x*((output*(1-output))*h[i]*(1-h[i]));
+						b_g2[i] +=   (t)*sign*w2[i]*((output*(1-output))*h[i]*(1-h[i]));;
+					}					
+				}
+			}
+			for(int i=0;i<20;++i)
+			{
+				w1[i] -=  s*(w1_g1[i] - 0.01*w1_g2[i]/sum_p);
+				w2[i] -=  s*(w2_g1[i] - 0.01*w2_g2[i]/sum_p);
+				b[i]  -=  s*(b_g1[i]  - 0.01*b_g2[i]/sum_p);
+			}
+			b2 -= (b2_g1 - 0.01*b2_g2/sum_p);
 			sum_error += error>0?error:-1*error;
 			if(start)
 				cout<<x<<"\t"<<output<<"\t"<<corpus[index].second<<endl;
 		}
 		cout<<sum_error<<endl;
-		if(sum_error<50) start = true;
+		//if(sum_error<50) start = true;
 	}	
 	return 0;
 }
