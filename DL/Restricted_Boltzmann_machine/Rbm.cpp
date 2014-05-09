@@ -36,26 +36,24 @@ double corpus2[8][9]={
 
 double sigmoid(double x)
 {
-	double ex = pow(2.718281828,x);
+        double ex = pow(2.718281828,x);
         return ex/(1+ex);
 }
 double* sig_table;
 double function_g(double x)
 {
-	x=x>3.99?4.0:x;
-	x=x<-3.99?-4.0:x;
-	return sig_table[(uint32_t)((x+4.0)*128*1024)];
+        x=x>3.99?4.0:x;
+        x=x<-3.99?-4.0:x;
+        return sig_table[(uint32_t)((x+4.0)*128*1024)];
 };
 double init_sig_table()
 {
-	sig_table = (double*)malloc((8*128*1024+1)*sizeof(double));
-        for(int i=1;i<8*128*1024;++i)
+        sig_table = (double*)malloc((8*128*1024+1)*sizeof(double));
+        for(int i=0;i<8*128*1024;++i)
         {
-                sig_table[i] = sigmoid(((i>>17)-4.0));
+                sig_table[i] = sigmoid((i/131072.0-4.0));
         }
-	sig_table[0] = 0;
-	sig_table[8*128*1024]=1;
-	
+
 }
 void init_matrix(t_array& w)
 {
