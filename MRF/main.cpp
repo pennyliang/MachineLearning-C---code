@@ -15,7 +15,7 @@ float p_corpus(int c,float theta,float& f1)
 		sum += corpus[c][i]>='a' && corpus[c][i]<='z'	? 1  : 0;	
 	}
 	f1 = sum/sizeof(corpus[c]);
-	return pow(2.718281828,-1*(theta * f1));
+	return pow(2.718281828,(theta * f1));
 }
 int main(void)
 {
@@ -30,9 +30,10 @@ int main(void)
 			p[i] = p_corpus(i,theta1,f1[i]);
 			sum_p += p[i];
 		}
-		theta1 -= 0.1*((f1[0]+f1[1]+f1[2]+f1[3]+f1[4])/5 - (f1[0]*p[0]/sum_p+f1[1]*p[1]/sum_p+f1[2]*p[2]/sum_p+f1[3]*p[3]/sum_p+f1[4]*p[4]/sum_p));
-		//printf ("%f\t%f\t%f\t%f\t%f\n",p[0]/sum_p, p[1]/sum_p,p[2]/sum_p,p[3]/sum_p,p[4]/sum_p,p[5]/sum_p);
-		printf ("%f\n",theta1);
+		//to get the Max value, so chose to add a positive gradient.
+		theta1 += 0.1*((f1[0]+f1[1]+f1[2]+f1[3]+f1[4])/5 - (f1[0]*p[0]/sum_p+f1[1]*p[1]/sum_p+f1[2]*p[2]/sum_p+f1[3]*p[3]/sum_p+f1[4]*p[4]/sum_p));
+		printf ("%d\t%f\t%f\t%f\t%f\t%f\n",iter,p[0]/sum_p, p[1]/sum_p,p[2]/sum_p,p[3]/sum_p,p[4]/sum_p,p[5]/sum_p);
+		//printf ("%f\n",theta1);
 	}	
 	return 0;
 }
