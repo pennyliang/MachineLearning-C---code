@@ -85,17 +85,18 @@ int main(void)
 				sign = +1;
 			else
 				sign = -1;
+			
+			for(int i=0;i<20;++i)
+                        {
+                                w1[i] -=  sign*s*w2[i]*x*((output*(1-output))*h[i]*(1-h[i]));
+                                b[i] -=   sign*s*w2[i]*((output*(1-output))*h[i]*(1-h[i]));
+                        }
 			for(int i=0;i<20;++i)
 			{
 				w2[i] -=  sign*s*h[i]*(output*(1-output));
 			}
 			b2 -= sign*s*(output*(1-output));
 
-			for(int i=0;i<20;++i)
-			{
-				w1[i] -=  sign*s*w2[i]*x*((output*(1-output))*h[i]*(1-h[i]));
-				b[i] -=   sign*s*w2[i]*((output*(1-output))*h[i]*(1-h[i]));
-			}
 			sum_error += error>0?error:-1*error;
 			if(start)
 				cout<<x<<"\t"<<output<<"\t"<<corpus[index].second<<endl;
