@@ -10,9 +10,10 @@ double sigmoid(double x)
         double ex = pow(2.718281828,x);
         return ex/(1+ex);
 }
+double beta = -1;  //make sure that the small energe means high probability and huge energe means low probability.
 double e(double x)
 {
-	return pow(2.718281828,x);
+	return pow(2.718281828,beta*x);
 }
 double* sig_table;
 double function_g(double x)
@@ -42,10 +43,10 @@ void sample()
 	}
 }
 
-int main(void)
+int main(int argc, char ** argv)
 {
 	init_sig_table();
-	double s = 0.1;
+	double s = atof(argv[1]);
 	sample();
 	double w1[20];
 	double w2[20];
@@ -100,11 +101,7 @@ int main(void)
 			sum_tmp += b2;
 			output = function_g(sum_tmp);
 			double error = output - corpus[index].second;
-			double sign;
-			if(error>0)
-				sign = +1;
-			else
-				sign = -1;
+			double sign = error>0?+1:-1;
 			for(int i=0;i<20;++i)
 			{
 				w2_g1[i] =  sign*h[i]*(output*(1-output));
@@ -116,7 +113,7 @@ int main(void)
 				w1_g1[i] =  sign*w2[i]*x*((output*(1-output))*h[i]*(1-h[i]));
 				b_g1[i] =   sign*w2[i]*((output*(1-output))*h[i]*(1-h[i]));
 			}
-			//sample_20_y
+			//sample_50_y
 			double sum_p = 0.0;
 			{	
 				for(int i = 0;i<20;++i)
@@ -126,7 +123,7 @@ int main(void)
 					b_g2[i] = 0;
 					b2_g2 = 0;
 				}
-				for(int idx=0;idx<20;++idx)
+				for(int sample_idx=0;sample_idx<50;++sample_idx)
 				{
 					double tmp = ((rand()%4096)/4095.0*2) - 1;
                 			double y = tmp*tmp;
@@ -143,12 +140,7 @@ int main(void)
 					sum_tmp += b2;
 					output = function_g(sum_tmp);
 					double errorx = output - y;
-					double sign;
-					if(errorx>0)
-						sign = +1;
-					else
-						sign = -1;
-
+					double sign = errorx>0?+1:-1;
 					errorx = errorx>0?errorx:-1*errorx;	
 					double t = e(errorx);
 					sum_p += t;
@@ -164,13 +156,14 @@ int main(void)
 					}					
 				}
 			}
+			
 			for(int i=0;i<20;++i)
 			{
-				w1[i] -=  s*(w1_g1[i] - 0.01*w1_g2[i]/sum_p);
-				w2[i] -=  s*(w2_g1[i] - 0.01*w2_g2[i]/sum_p);
-				b[i]  -=  s*(b_g1[i]  - 0.01*b_g2[i]/sum_p);
+				w1[i] -=  s*(w1_g1[i] - w1_g2[i]/sum_p);
+				w2[i] -=  s*(w2_g1[i] - w2_g2[i]/sum_p);
+				b[i]  -=  s*(b_g1[i]  - b_g2[i]/sum_p);
 			}
-			b2 -= (b2_g1 - 0.01*b2_g2/sum_p);
+			b2 -= s*(b2_g1 - b2_g2/sum_p);
 			sum_error += error>0?error:-1*error;
 			if(start)
 				cout<<x<<"\t"<<output<<"\t"<<corpus[index].second<<endl;
