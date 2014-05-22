@@ -90,7 +90,7 @@ int main(int argc, char ** argv)
 				b2_g1 = 0;
 			}
 			double x = 0;
-			for(int mini_batch=0;mini_batch<10;++mini_batch)
+			for(int mini_batch=0;mini_batch<1;++mini_batch)
 			{	
 				x = corpus[(index+mini_batch)%4096].first;
 
@@ -123,7 +123,7 @@ int main(int argc, char ** argv)
 					b_g1[i] +=   sign*w2[i]*((output*(1-output))*h[i]*(1-h[i]));
 				}
 			}
-			index+=10;
+			index+=1;
 			//sample_20_y
 			double sum_p = 0.0;
 			{	
@@ -136,7 +136,6 @@ int main(int argc, char ** argv)
 				}
 				for(int sample_idx=0;sample_idx<20;++sample_idx)
 				{
-                			//double y = 0.0 + 0.05*sample_idx;
 					double tmp = ((rand()%4096)/4095.0*2) - 1.0;
 					double tmp2 = x;//((rand()%4096)/4095.0*2) - 1.0;
 					double y = tmp*tmp;
@@ -180,12 +179,12 @@ int main(int argc, char ** argv)
 		cout<<iter<<"\t";
 		cout<<s<<"\t"<<d<<"\t";
 		cout<<sum_error<<endl;
-		/*if(sum_error<50) 
+		if(sum_error<30) 
                 {
-                        start = true;
-                }*/
+                        //break;
+                }
 	}
-	/*
+	/*	
 	for(int i=0;i<11;++i)
 	{
 		double a = -1.0+(0.2*i);
@@ -208,7 +207,7 @@ int main(int argc, char ** argv)
 			errorx = errorx>0?errorx:-1*errorx;
 			cout<<e(errorx)<<endl;
 		}
-		cout<<endl<<endl;
+		cout<<endl;
 	}*/	
 	return 0;
 }
