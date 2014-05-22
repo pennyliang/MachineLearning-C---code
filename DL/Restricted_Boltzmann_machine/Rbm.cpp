@@ -44,17 +44,19 @@ double function_g(double x)
 {
         x=x>3.99?4.0:x;
         x=x<-3.99?-4.0:x;
-        return sig_table[(uint32_t)((x+4.0)*128*1024)];
+        //return sigmoid(x);
+	return sig_table[(uint32_t)((x+4.0)*8*128*1024)];
 };
 double init_sig_table()
 {
-        sig_table = (double*)malloc((8*128*1024+1)*sizeof(double));
-        for(int i=0;i<8*128*1024;++i)
+        sig_table = (double*)malloc((64*128*1024+1)*sizeof(double));
+        for(int i=0;i<64*128*1024;++i)
         {
-                sig_table[i] = sigmoid((i/131072.0-4.0));
+                sig_table[i] = sigmoid((i/(1048576.0)-4.0));
         }
-
+        sig_table[64*128*1024] = 1;
 }
+
 void init_matrix(t_array& w)
 {
 	for(int i=0;i<w.m_X;++i)
